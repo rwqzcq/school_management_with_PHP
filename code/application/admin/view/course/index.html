@@ -1,0 +1,113 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">admin</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">course</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					list
+				</li>
+			</ul>
+            <h3 class="text-center">
+				Courses list
+			</h3> 
+            <a href="{:url('create')}" class="btn btn-primary">add</a>
+            <hr>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr class = "text-center">
+						<th>
+							name
+						</th>
+						<th>
+							introduction
+						</th>
+						<th>
+							picture
+						</th>
+						<th>
+							create_time
+						</th>
+						<th>
+							action
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+                {volist name="teachers" id="vo"}
+                    <tr>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.introduction}</td>
+                        <td>
+                        <img src = "/uploads/{$vo.picture}" width = "80"/>                   
+                        </td>
+                        <td>{$vo.create_time}</td>
+                        <td>
+							<a href = "{:url('edit', ['id' => $vo.id])}">update</a> | 
+							<a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a> | 
+							<a data-name = "{$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >assign teachers</a>
+						</td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-container-769144" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title" id="myModalLabel">
+					Assign teachers for <span></span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form action = "{:url('save')}" role="form" method = "post" id = "m_form">
+					<!--<div class="form-group">
+						<label for="exampleInputEmail1">Classname</label><input type="text" name = "name" required class="form-control" id="exampleInputEmail1" />
+					</div>
+					-->
+					<div class="form-group">
+						{volist name = "choices" id = "vo"}
+							<label class="checkbox-inline">
+								<input type="checkbox" name = "teacher_ids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
+							</label>
+						{/volist}
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">close</button> 
+			</div>
+		</div>
+		
+	</div>
+
+
+<script>
+    $(function(){
+        /*$('.delete').click(function(){
+            var url = {:url()}
+            console.log($(this).data('id'));
+            $.getJSON();
+        });*/
+		$('.a_update').bind('click', function(){
+			$('#myModalLabel span').html($(this).data('name'));
+			$('#exampleInputEmail1').val($(this).data('name'));
+			var url = '{:url('assignTeacher')}' + '?course_id='  + $(this).data('id');
+			$('#m_form').attr('action', url);
+		});       
+    });
+</script>
+{/block}

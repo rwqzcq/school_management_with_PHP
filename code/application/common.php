@@ -13,6 +13,9 @@
 
 function deal_upload($model_name, $key = 'photo') {
     $file = request()->file($key);
+    if(!$file) {
+        return '';
+    }
     $info = $file->move( '../public/uploads/' . $model_name);
     if($info){
         // 成功上传后 获取上传信息

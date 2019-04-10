@@ -107,7 +107,19 @@ class Teacher extends Controller
      */
     public function edit($id)
     {
-        //
+        $student = Model::get($id);
+        if(!$student) {
+            return $this->error('there is no such teacher!');
+        }
+        $classes = Classes::all();
+
+        // 只能调整没有的
+        $classed = Db::table('teacher')->where('id', '<>', $id)->field('class_id')->select();
+        $classed = array_column($classed, 'class_id');
+        $classed = array_unique($classed);
+        $classes = Classes::where('id', 'not in', $classed)->select();
+
+        return $this->fetch('', ['student' => $student, 'classes' => $classes]);
     }
 
     /**
@@ -119,7 +131,16 @@ class Teacher extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $student = Model::get($id);
+        $data = [];
+        $data = $request->param();
+        $photo = deal_upload('teacher', 'photo');
+        if($photo) {
+            $data['photo'] = $photo;
+        }
+       // $data['photo'] = deal_upload('teacher', 'photo');
+        $student->save($data,['id' => $id]);
+        return $this->success('update OK!', 'index');
     }
 
     /**
@@ -130,6 +151,7 @@ class Teacher extends Controller
      */
     public function delete($id)
     {
-        //
+        Model::destroy($id);
+        return $this->redirect('index');
     }
 }
