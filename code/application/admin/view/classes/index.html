@@ -1,0 +1,91 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">admin</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">classes</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					list
+				</li>
+			</ul>
+            <h3 class="text-center">
+				classes list
+			</h3> 
+            <!-- <a href="{:url('create')}" class="btn btn-primary">add</a> -->
+			<a id="modal-769144" href="#modal-container-769144" role="button" class="btn btn-primary" data-toggle="modal">Add</a>
+            <hr>
+			<table class="table table-bordered text-center">
+					<tr>
+						<td>
+							class_id
+						</td>
+						<td>
+							class_name
+						</td>
+						<td>
+							action
+						</td>
+					</tr>
+				<tbody>
+                {volist name="classes" id="vo"}
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.name}</td>
+						<!-- href = "{:url('edit', ['id' => $vo.id])}" -->
+                        <td><a data-name = "{$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >update</a> | <a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a></td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-container-769144" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title" id="myModalLabel">
+					Add Class
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form action = "{:url('save')}" role="form" method = "post" id = "m_form">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Classname</label><input type="text" name = "name" required class="form-control" id="exampleInputEmail1" />
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">close</button> 
+			</div>
+		</div>
+		
+	</div>
+
+
+<script>
+    $(function(){
+        /*$('.delete').click(function(){
+            var url = {:url()}
+            console.log($(this).data('id'));
+            $.getJSON();
+        });*/
+		$('.a_update').bind('click', function(){
+			$('#myModalLabel').html('Update Class');
+			$('#exampleInputEmail1').val($(this).data('name'));
+			var url = '{:url('update')}' + '?id='  + $(this).data('id');
+			$('#m_form').attr('action', url);
+		});       
+    });
+</script>
+{/block}

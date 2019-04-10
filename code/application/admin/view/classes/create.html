@@ -1,0 +1,18 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-center">
+				add class
+			</h3>
+			<form action = "{:url('save')}" role="form" method = "post" enctype="multipart/form-data">
+				<div class="form-group">
+					 <label for="exampleInputEmail1">Classname</label><input type="text" name = "name" required class="form-control" id="exampleInputEmail1" />
+				</div>
+                <button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+	</div>
+</div>
+{/block}

@@ -21,8 +21,9 @@ class Course extends Base
         foreach ($courses as $course) {
            // 已经提交的不能再提交
            $grades = $course->grades()->where('sid', $this->currentStudent->id)->select();
-           
+           echo $grades;
         }
+        die;
     }
     /**
      * 添加评价

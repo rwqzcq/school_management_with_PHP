@@ -15,7 +15,10 @@ class Classes extends Controller
      */
     public function index()
     {
-        dump(Model::all());
+        $all = Model::all();
+        $assign = [];
+        $assign['classes'] = $all;
+        return $this->fetch('', $assign);
     }
 
     /**
@@ -25,7 +28,7 @@ class Classes extends Controller
      */
     public function create()
     {
-        //
+        return $this->fetch('');
     }
 
     /**
@@ -37,15 +40,16 @@ class Classes extends Controller
     public function save(Request $request)
     {
         $name = $request->param('name');
-        $name = "class01";
+        //$name = "class01";
         $classes =  new Model();
         // 查询
         $r = $classes->where('name', $name)->find();
         if($r) {
-            return 'wrong';
+            return $this->error('the class has been added!');
         } else {
             $classes->name = $name;
             $classes->save();
+            return $this->redirect('index');
         }
     }
 
@@ -80,7 +84,11 @@ class Classes extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $student = Model::get($id);
+        $data = [];
+        $data = $request->param();
+        $student->save($data,['id' => $id]);
+        return $this->success('update OK!', 'index');
     }
 
     /**
@@ -91,6 +99,7 @@ class Classes extends Controller
      */
     public function delete($id)
     {
-        //
+        Model::destroy($id);
+        return $this->redirect('index');
     }
 }
