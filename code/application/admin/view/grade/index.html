@@ -1,0 +1,56 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">admin</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">grades</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					list
+				</li>
+			</ul>
+            <h3 class="text-center">
+				grade list
+			</h3> 
+			
+            <hr>
+			<table class="table table-bordered text-center">
+					<tr>
+						<td>
+							student_name
+						</td>
+						<td>
+							score
+						</td>
+						<td>
+							comment
+						</td>
+						<td>
+							feedback
+						</td>
+					</tr>
+				<tbody>
+                {volist name="classes" id="vo"}
+                    <tr>
+                        <td>{$vo.student.username}</td>
+                        <td>{$vo.score}</td>
+						<td>{$vo.comment}</td>
+						<td>{$vo.student_feedback}</td>
+						<!-- href = "{:url('edit', ['id' => $vo.id])}" -->
+                        
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+{/block}

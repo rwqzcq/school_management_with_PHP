@@ -1,0 +1,137 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">student</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">course</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					list
+				</li>
+			</ul>
+            <h3 class="text-center">
+				Courses list
+			</h3> 
+            <!-- 检索区域 -->
+            <div class = "searchArea">
+				<form action = "{:url('index')}" role="form" method = "post" id = "m_form">
+					<div class="form-group">
+						<input placeholder = "input the course name" type = "text" name = "name"  class = "form-control">
+					</div>
+					<button type="submit" class="btn btn-default">Search</button>
+				</form>	
+            </div>
+            <hr>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr class = "text-center">
+						<th>
+							name
+						</th>
+						<th>
+							introduction
+						</th>
+						<th>
+							picture
+						</th>
+						<th>
+							score
+						</th>
+						<th>
+							comment
+						</th>
+						<th>
+							action
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+                {volist name="courses" id="vo"}
+                    <tr>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.introduction}</td>
+                        <td>
+                        	<img src = "/uploads/{$vo.picture}" width = "80"/>                   
+                        </td>
+                        <td>
+						{if $vo.haveGrade != false}
+							{$vo.haveGrade}
+						{else /} please wait
+						{/if}						
+						</td>
+                        <td>
+						{if $vo.haveGrade != false}
+							{$vo.comment}
+						{else /} please wait
+						{/if}						
+						</td>
+                        <td>
+						{if $vo.haveGrade != false}
+							<a data-id = "{$vo.currentStudentGrade.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >give feedback 
+						{else /} please wait
+						{/if}	
+						</td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-container-769144" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title" id="myModalLabel">
+					Please give you feedback <span></span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form action = "{:url('feedback')}" role="form" method = "post" id = "m_form">
+				<input type = "hidden" name = "grade_id" value = "0" id = "grade_id"/>
+					<div class="form-group">
+						<label for="exampleInputEmail1">Feedback</label>
+						<textarea name = "feedback" class="form-control"></textarea>
+					</div>
+					<div class="form-group">
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">close</button> 
+			</div>
+		</div>
+		
+	</div>
+
+
+<script>
+    $(function(){
+        /*$('.delete').click(function(){
+            var url = {:url()}
+            console.log($(this).data('id'));
+            $.getJSON();
+        });*/
+		$('.a_update').bind('click', function(){
+			/*$.getJSON('', {}. function(data){
+				
+			});*/
+			//$('#myModalLabel span').html($(this).data('name'));
+			$('#grade_id').val($(this).data('id'));
+			/*var url = '{:url('assignTeacher')}' + '?course_id='  + $(this).data('id');
+			$('#m_form').attr('action', url);*/
+		});     
+
+
+    });
+</script>
+{/block}

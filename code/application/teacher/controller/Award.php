@@ -17,7 +17,10 @@ class Award extends Base
      */
     public function index()
     {
-        Model::all();
+        $awards = Model::all();
+        $assign = [];
+        $assign['awards'] = $awards;
+        return $this->fetch('', $assign);
     }
 
     /**
@@ -38,13 +41,12 @@ class Award extends Base
      */
     public function save(Request $request)
     {
-        $data = [
-            'name' => 'pretty girl',
-            'introduction' => 'this is tha award that is for all of you!'
-        ];
-        $model = new Model();
-        $model->data($data);
-        $model->save();
+        $data = [];
+        $data = $request->param();
+        $course = new Model();
+        $course->data($data);
+        $course->save();  
+        return $this->success('OK', 'index'); 
     }
 
     /**
@@ -78,7 +80,11 @@ class Award extends Base
      */
     public function update(Request $request, $id)
     {
-        //
+        $student = Model::get($id);
+        $data = [];
+        $data = $request->param();
+        $student->save($data,['id' => $id]);
+        return $this->success('update OK!', 'index');
     }
 
     /**
@@ -89,7 +95,8 @@ class Award extends Base
      */
     public function delete($id)
     {
-        //
+        Model::destroy($id);
+        return $this->success('OK!', 'index');
     }
 
     /**
@@ -97,26 +104,73 @@ class Award extends Base
      */
     public function detail($aid)
     {
+        $award = Model::get($aid);
         $students = Model::get($aid)->students;
-        foreach ($students as $student) {
-            echo $student->username;
-        }
+        // foreach ($students as $student) {
+        //     echo $student->username;
+        // }
         // assign
+        $assign = [];
+        $assign['award'] = $award;
+        return $this->view->fetch('', $assign);
     }
+    /**
+     * 颁奖学生页面
+     */
+    public function putStudentPage($aid)
+    {
+        // 找到班级内的学生
+        $class = $this->currentTeacher->classes;
+        $students = $class->students;
+        $student_ids = array_column($students->toArray(), 'id');
+        // 找到针对这个奖项还没有颁奖的人
+        $records = AwardStudent::where('aid', $aid)->select();
+        //dump($records);
+       // $final_ids = [];
+        if(count($records) > 0) {
+            $have_student_ids = array_column($records->toArray(), 'sid');
+            //$final_ids = 
+            $final_students = $class->students()->where('id', 'not in', $have_student_ids )->select();
+            if(count($final_students) == 0) {
+                return $this->error('there is no alternative students you can assign!');
+            }
+        } else {
+            $final_students = $students;
+        }
+        // 找到奖项
+        $award = Model::get($aid);
+
+        $assign = [];
+        $assign['students'] = $final_students;
+        $assign['award'] = $award;
+        return $this->fetch('assign_s', $assign);
+    }
+
     /**
      * 给某个学生颁奖
      */
-    public function putStudent($aid, $sid)
+    public function putStudent(Request $request)
     {
-        // $aid = 1;
-        // $sid = 2;
-        $if = AwardStudent::get(function($query)use($aid, $sid){
-            return $query->where(['aid' =>  $aid, 'sid' => $sid]);
+        $aid = $request->param('aid');
+        $sids = $request->param('sids/a');
+
+        $if = AwardStudent::all(function($query)use($aid, $sids){
+            return $query->where(['aid' =>  $aid])->whereIn('sid', [$sids]); // , 'sid' => ['in', $sids]
         });
-        if($if) {
-            echo '已经存在';
+        if(count($if) > 0) {
+            //dump($if);
+            return $this->error('there are some students that have been assigned');
         } else {
-            AwardStudent::create(['aid' => $aid, 'sid' => $sid]);
+            $data = [];
+            foreach ($sids as $sid) {
+                $temp = [];
+                $temp['aid'] = $aid;
+                $temp['sid'] = $sid;
+                $data[] = $temp;
+            }
+            $as = new AwardStudent;
+            $as->saveAll($data);
+            return $this->success('Ok!', 'index');
         }
     }
     /**
@@ -127,10 +181,11 @@ class Award extends Base
         $if = AwardStudent::get(function($query)use($aid, $sid){
             return $query->where(['aid' =>  $aid, 'sid' => $sid]);
         });
-        if(!$if) {
-            echo '不存在';
+        if(count($if) == 0) {
+            return $this->error('the student have not  been assigned');
         } else {
             $if->delete();
+            return $this->success('OK!');
         }
     }
 

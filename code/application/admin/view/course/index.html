@@ -52,7 +52,10 @@
                         <td>
 							<a href = "{:url('edit', ['id' => $vo.id])}">update</a> | 
 							<a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a> | 
-							<a data-name = "{$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >assign teachers</a>
+							<a data-name = "{$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >assign teachers | </a>
+							<!-- check assigned teachers -->
+							<a class = "a_view_teachers" data-toggle="modal" data-id = "{$vo.id}" href="#modal-container-769144" href = "{:url('edit', ['id' => $vo.id])}">view teachers | </a>
+							<a href = "{:url('Grade/index', ['course_id' => $vo.id])}">view grades</a>
 						</td>
                     </tr>
                 {/volist}
@@ -77,10 +80,13 @@
 						<label for="exampleInputEmail1">Classname</label><input type="text" name = "name" required class="form-control" id="exampleInputEmail1" />
 					</div>
 					-->
+					<div class="update-area">
+
+					</div>
 					<div class="form-group">
 						{volist name = "choices" id = "vo"}
 							<label class="checkbox-inline">
-								<input type="checkbox" name = "teacher_ids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
+								<input class= "teacher-ids" type="checkbox" name = "teacher_ids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
 							</label>
 						{/volist}
 					</div>
@@ -103,11 +109,54 @@
             $.getJSON();
         });*/
 		$('.a_update').bind('click', function(){
+			/*$.getJSON('', {}. function(data){
+				
+			});*/
+			console.log($('.teacher-ids').length);
+			if($('.teacher-ids').length == 0) {
+				alert('there is no alternative teachers you can assign! Please add teachers!');
+				return false;
+			}
 			$('#myModalLabel span').html($(this).data('name'));
 			$('#exampleInputEmail1').val($(this).data('name'));
 			var url = '{:url('assignTeacher')}' + '?course_id='  + $(this).data('id');
 			$('#m_form').attr('action', url);
-		});       
+		});     
+
+		$('.a_view_teachers').bind('click', function(){
+			$('#myModalLabel').html('view Teachers');
+			var url = '{:url('getAssignedTeachers')}';
+			$('.update-area').html('');
+			$.ajax({
+				'type' : 'get',
+				'url' : url,
+				'data' : {'id' : $(this).data('id')},
+				'success' : function(data) {
+					data = JSON.parse(data);
+					console.log(data);
+					dom = '';
+					if(data.length == 0) { // data == '[]' || data == []
+						dom = 'no teacher!';
+					} else {
+						for(item in data) {					
+							temp = data[item];
+							console.log(item);
+							dom += 
+								'<label class="checkbox-inline">' + 
+										'<input checked class= "teacher-ids" type="checkbox" name = "teacher_ids[]" value = "' + temp.id + '">'  + temp.username + ' &nbsp;' + 
+								'</label>';
+							
+						}	
+					}		
+					$('.update-area').html(dom);	
+				},
+				'dataType' : 'JSON',
+			});
+
+			var url = '{:url('updateAssignTeachers')}' + '?course_id='  + $(this).data('id');
+			$('#m_form').attr('action', url);
+
+		});  
     });
 </script>
 {/block}

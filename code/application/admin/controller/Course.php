@@ -6,6 +6,8 @@ use think\Controller;
 use think\Request;
 use app\common\model\Course as Model;
 use app\common\model\Teacher;
+use app\common\model\CourseTeacher as CT;
+use think\Db;
 
 class Course extends Controller
 {
@@ -28,8 +30,15 @@ class Course extends Controller
         $all = Model::all();
         $assign = [];
         $assign['teachers'] = $all;
-
-        $assign['choices'] = Teacher::all();
+        // 教师分配
+        $assigned_teachers = CT::all()->toArray();
+        if(!$assigned_teachers) {
+            $assign['choices'] = Teacher::all();
+        } else {
+            // 排除已经分配的
+            $assigned_tids = array_unique(array_column($assigned_teachers, 'tid'));
+            $assign['choices'] = Teacher::where('id', 'not in', $assigned_tids)->select();
+        }
         return $this->fetch('', $assign);
     }
 
@@ -133,6 +142,69 @@ class Course extends Controller
     public function assignTeacher(Request $request, $course_id)
     {
         $teacher_ids = $request->param('teacher_ids/a');
+        // array_walk($arr, function (&$v, $k, $p) {$v = array_merge($v, $p);}, array('sex' => '女'));
+        // dump($teacher_ids);
+        $add = [];
+        foreach ($teacher_ids as $tid) {
+            $temp = [];
+            $temp['tid'] = $tid;
+            $temp['cid'] = $course_id;
+            $add[] = $temp;
+        }
+        $ct = new CT();
+        $ct->saveAll($add);
+        return $this->success('OK!', 'index');
+    }
+    /**
+     * 查看是否已经有老师被分配了课程
+     */
+    // public function beforeAssign($course_id)
+    // {
+    //     //Teacher::get();
         
+
+    // }
+    public function getAssignedTeachers($id) 
+    {
+        $course = Model::get($id);
+        // // 找到课程所叫的老师
+        $teachers = $course->teachers;
+        // foreach($teachers as $teacher) {
+        //     echo $teacher->username;
+        //     //dump($teacher);
+        // }
+        if($teachers) {
+            return $teachers->toJson();
+        } else {
+            return [];
+        }
+        
+    }
+    public function updateAssignTeachers(Request $request, $course_id) 
+    {
+        // $course = Model::get(1);
+        // // // 找到课程所叫的老师
+        // $teachers = $course->teachers;
+        // // foreach($teachers as $teacher) {
+        // //     echo $teacher->username;
+        // //     //dump($teacher);
+        // // }
+        // return $course->toJson();
+        $teacher_ids = $request->param('teacher_ids/a');
+        // if(!$teacher_ids) {
+        //     return $this->error('no teachers!');
+        // } 
+        // 删除原来 [1, 2] [1, 2, 3] [1,2] [1]
+        //CT::where(['cid' => $course_id, 'tid' => ['in', $teacher_ids]])->delete();
+        DB::table('course_teacher')->where('cid', $course_id)->delete(); // ->where('tid', 'not in', $teacher_ids)
+        if(!$teacher_ids) {
+            return $this->success('OK!', 'index');
+        }
+        // // 增加现有
+        // dump($teacher_ids);
+        $course = Model::get($course_id);
+        $course->teachers()->attach($teacher_ids);
+        // $course->teachers()->detach([10,11]);
+        return $this->success('OK!', 'index');
     }
 }

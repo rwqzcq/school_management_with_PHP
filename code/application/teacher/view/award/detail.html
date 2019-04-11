@@ -1,0 +1,46 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">teacher</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">awards</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					detail
+				</li>
+			</ul>
+            <hr>
+            <!-- <a href="{:url('create')}" class="btn btn-primary">add</a> -->
+			<a id="modal-769144" href="#modal-container-769144" role="button" class="btn btn-primary" data-toggle="modal">Add Score</a>
+            <hr>
+            <h3 class="text-center">
+				{$award.name} Detail
+			</h3> 
+			<table class="table table-bordered text-center">
+					<tr>
+						<td>
+							student_name
+						</td>
+                        <td> action </td>
+					</tr>
+				<tbody>
+                {volist name="$award.students" id="vo"}
+                    <tr>
+                        <td>{$vo.username}</td>
+						<!-- href = "{:url('edit', ['id' => $vo.id])}" -->
+                        <td> <a href = "{:url('deleteStudent', ['sid' => $vo.id, 'aid' => $award.id])}" class = "delete" data-id = {$vo.id}>rollback</a></td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{/block}

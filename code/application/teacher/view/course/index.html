@@ -1,0 +1,106 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+			<ul class="breadcrumb">
+				<li>
+					<a href="#">student</a> <span class="divider"></span>
+				</li>
+				<li>
+					<a href="#">courses</a> <span class="divider"></span>
+				</li>
+				<li class="active">
+					list
+				</li>
+			</ul>
+            <h4>
+            your class is {$classes}
+			</h4> 
+            <hr>
+            <h4>
+            your course is {$course.name}
+            </h4>
+            <hr>
+            <!-- <a href="{:url('create')}" class="btn btn-primary">add</a> -->
+			<a id="modal-769144" href="#modal-container-769144" role="button" class="btn btn-primary" data-toggle="modal">Add Score</a>
+            <hr>
+            <h3 class="text-center">
+				{$course.name} Score List
+			</h3> 
+			<table class="table table-bordered text-center">
+					<tr>
+						<td>
+							student_name
+						</td>
+						<td>
+							score
+						</td>
+						<td>
+							your comment
+						</td>
+                        <td>student_feedback</td>
+                        <td> action </td>
+					</tr>
+				<tbody>
+                {volist name="grades" id="vo"}
+                    <tr>
+                        <td>{$vo.student.username}</td>
+                        <td>{$vo.score}</td>
+						<td>{$vo.comment}</td>
+						<td>{$vo.student_feedback}</td>
+						<!-- href = "{:url('edit', ['id' => $vo.id])}" -->
+                        <td><a  data-id = "{$vo.id}"  href= "{:url('edit', ['id' => $vo.id])}"  >update</a> | <a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a></td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-container-769144" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title" id="myModalLabel">
+					Add Score For {$course.name}
+				</h4>
+			</div>
+			<div class="modal-body">
+				<form action = "{:url('putScore')}" role="form" method = "post" id = "m_form">
+
+                    {if count($students) > 0}
+                    <input type = "hidden" name = "cid" value = "{$course.id}" />
+					<div class="form-group">
+                        <label for="">Student</label>
+                        <select name="sid" id="" class="form-group" class = "form-control select">
+                        {volist name = "$students" id = "vo"}
+                            <option value="{$vo.id}">{$vo.username}</option>
+                        {/volist}
+                        </select>						
+					</div>
+                    <div class="form-group">
+                        <label for="">Score</label>
+                        <input type="text" name = "score" required class="form-control" id="exampleInputEmail1" />
+                    </div>
+                    <div class="form-group">
+                        <label for="">Comment</label>
+                        <input type="text" name = "comment" required class="form-control" id="exampleInputEmail1" />
+                    </div>
+                    {else /} No students you can add
+                    {/if}
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">close</button> 
+			</div>
+		</div>		
+	</div>
+
+
+
+{/block}
