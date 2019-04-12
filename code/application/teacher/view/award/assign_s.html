@@ -11,7 +11,7 @@
                 <div class="form-group">
                     {volist name = "students" id = "vo"}
                         <label class="checkbox-inline">
-                            <input class= "student-ids" type="checkbox" name = "sids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
+                            <input required class= "student-ids" type="checkbox" name = "sids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
                         </label>
                     {/volist}
                 </div>
