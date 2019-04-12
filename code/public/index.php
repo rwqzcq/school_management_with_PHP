@@ -11,7 +11,7 @@
 
 // [ 应用入口文件 ]
 namespace think;
-
+ini_set("display_errors", 0);
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';
 // 设置落地页的路径常量

@@ -4,21 +4,9 @@
 <div class="container">
 	<div class="row">
 		<div class="span12">
-			<!-- <ul class="breadcrumb">
-				<li>
-					<a href="#">admin</a> <span class="divider"></span>
-				</li>
-				<li>
-					<a href="#">teacher</a> <span class="divider"></span>
-				</li>
-				<li class="active">
-					list
-				</li>
-			</ul> -->
             <h3 class="text-center">
-				teachers list
+				Your Profile 
 			</h3> 
-            <a href="{:url('create')}" class="btn btn-primary">add</a>
             <hr>
 			<table class="table table-bordered text-center">
 				<thead>
@@ -50,7 +38,6 @@
 					</tr>
 				</thead>
 				<tbody>
-                {volist name="teachers" id="vo"}
                     <tr>
                         <td>{$vo.teacher_number}</td>
                         <td>{$vo.username}</td>
@@ -61,9 +48,8 @@
                         <img src = "/uploads/{$vo.photo}" width = "80"/>                   
                         </td>
                         <td>{$vo.classes.name}</td>
-                        <td><a href = "{:url('edit', ['id' => $vo.id])}">update</a> | <a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a></td>
+                        <td><a href = "{:url('editTeacher', ['id' => $vo.id])}">update</a></td>
                     </tr>
-                {/volist}
 				</tbody>
 			</table>
 		</div>

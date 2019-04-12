@@ -6,7 +6,7 @@ use think\Model;
 
 class Teacher extends Model
 {
-    public function getGenderAttribute($value)
+    public function getGenderAttr($value)
     {
         return ['1' => 'male', '2' => 'female'][$value];
     }

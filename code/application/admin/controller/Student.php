@@ -128,7 +128,10 @@ class Student extends Controller
         $student = Model::get($id);
         $data = [];
         $data = $request->param();
-        $data['photo'] = deal_upload('student', 'photo');
+        $photo = deal_upload('student', 'photo');
+        if($photo) {
+            $data['photo'] = $photo;
+        }       
         $student->save($data,['id' => $id]);
         return $this->success('update OK!', 'index');
     }

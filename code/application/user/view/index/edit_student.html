@@ -1,0 +1,52 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="text-center">
+				Update Your Profile <span style = "color:red">{$student.username}</span>
+			</h3>
+			<form action = "{:url('updateStudent', ['id' => $student.id])}" role="form" method = "post" enctype="multipart/form-data">
+				
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Username</label><input readonly type="text" value = "{$student.username}" name = "username" required class="form-control" id="exampleInputEmail1" />
+				</div>
+				<div class="form-group">
+					<label for="exampleInputPassword1">Password</label><input type="password" name = "password" value = "{$student.password}"  class="form-control" id="exampleInputPassword1" />
+				</div>
+				<div class="form-group">
+					 <label for="exampleInputEmail1">Student_id</label><input readonly type="text" name = "student_number" value = "{$student.student_number}" class="form-control" id="exampleInputEmail1" placeholder = "do not repea t "/>
+				</div>
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Class</label>
+                     <select name = "class_id" class = "form-control select" disabled>
+                        {volist name = "classes" id = "vo"}
+                        <option value="{$vo.id}"   {eq name="vo:id" value="$student:class_id"}selected{/eq}      >{$vo.name}</option>
+                        {/volist}
+                     </select>             
+				</div>
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Gender</label>
+                     <select name = "gender" class = "form-control select">
+                        <option value="1" {eq name="student.gender" value="male"}selected{/eq}>male</option>
+                        <option value="2" {eq name="student.gender" value="female"}selected{/eq}>female</option>
+                     </select>             
+				</div>
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Birthday</label><input value = "{$student.date_of_birth}" name = "date_of_birth" required type="date" class="form-control" id="exampleInputEmail1" />
+				</div>
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Address</label><input type="text" value = "{$student.address}" name = "address" required class="form-control" id="exampleInputEmail1" />
+				</div>
+                <div class="form-group">
+					 <label for="exampleInputEmail1">Phone</label><input type="text" value = "{$student.phone_number}" name = "phone_number" required class="form-control" id="exampleInputEmail1" />
+				</div>
+				<div class="form-group">
+					 <label for="exampleInputFile">Photo</label><input type="file" name = "photo" id="exampleInputFile" />
+				</div>
+                <button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+	</div>
+</div>
+{/block}

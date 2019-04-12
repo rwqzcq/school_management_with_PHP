@@ -25,22 +25,22 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="./" class="navbar-brand">School Management System</a>
+                <a href="#" class="navbar-brand">School Management System</a>
             </div>
             <!--小屏幕导航按钮和logo-->
             <!--导航-->
             <div class="navbar-collapse collapse ">
                 <ul class="nav navbar-nav navbar-center">
-                    <li class='text-center' >
-                        <a href='./index.html' target=''>Index</a>
-                    </li>
             {switch $Think.session.role}
 
                 {case Teacher}
                     <li class = "text-center"><a href = "{:url('teacher/course/index')}" >Courses</a></li>
+                    <li class = "text-center"><a href = "{:url('teacher/student/index')}" >Your Students</a></li>
+                    <li class = "text-center"><a href = "{:url('teacher/award/index')}" >Award</a></li>
                 {/case}
                 {case Student}
                     <li class = "text-center"><a href = "{:url('student/course/index')}" >Courses</a></li>
+                    
                 {/case}
                 {case Admin}
                     <li class = "text-center"><a href = "{:url('admin/student/index')}" >Students</a></li>
@@ -49,18 +49,20 @@
                 {/case}
 
                 {default /}<li class = "text-center"><a href = "{:url('student/course/index')}" >Courses</a></li>
-                    <li class = "text-center"><a href = "{:url('admin/course/index')}" >Your Profile</a></li>
             {/switch}
-                     <li class = "text-center"><a href = "{:url('admin/course/index')}" >Your Profile</a></li>
+                     <li class = "text-center"><a href = "{:url('user/index/profile')}" >Your Profile</a></li>
                 </ul>
                 <!-- 搜索 -->
                 <form method="get" action="" class="navbar-form navbar-right">
                     <div class="form-group">
                        <!-- <input type="text" class="form-control" placeholder="搜索小说" name="keyword" /> 
                         <input type="submit" class="btn" value="Go" style="margin:0" /> -->
-                        <a class="btn">登录|注册|用户名</a>
+                        <!-- <a class="btn">登录|注册|用户名</a> -->
+                        <span>Hello {$Think.session.user_object.username}</span>
+                        <a class="btn" href = "{:url('user/index/logout')}" style="margin:0">Logout</a>
                     </div>
                 </form>
+                
                 <div>
                     
                 </div>

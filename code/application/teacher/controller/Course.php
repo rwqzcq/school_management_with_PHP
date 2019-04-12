@@ -30,8 +30,7 @@ class Course extends Base
             $has_socred[] = $grade->sid;
         }
         // 学生列表
-        $students = Student::where('id', 'not in', $has_socred)->select();
-        
+        $students = Student::where('id', 'not in', $has_socred)->select();        
         $assign = [];
         $assign['course'] = $course;
         $assign['classes'] = $class;

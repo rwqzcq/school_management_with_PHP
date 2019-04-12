@@ -4,26 +4,15 @@
 <div class="container">
 	<div class="row">
 		<div class="span12">
-			<!-- <ul class="breadcrumb">
-				<li>
-					<a href="#">admin</a> <span class="divider"></span>
-				</li>
-				<li>
-					<a href="#">grades</a> <span class="divider"></span>
-				</li>
-				<li class="active">
-					list
-				</li>
-			</ul> -->
             <h3 class="text-center">
-				grade list
+				<span style = "color:red">{$student.username}</span> Score List
 			</h3> 
-			
             <hr>
 			<table class="table table-bordered text-center">
-					<tr>
+				<thead>
+					<tr class = "text-center">
 						<td>
-							student_name
+							course_name
 						</td>
 						<td>
 							score
@@ -32,18 +21,17 @@
 							comment
 						</td>
 						<td>
-							feedback
+							student_feedback
 						</td>
 					</tr>
+				</thead>
 				<tbody>
-                {volist name="classes" id="vo"}
+                {volist name="$student.grades" id="vo"}
                     <tr>
-                        <td>{$vo.student.username}</td>
+                        <td>{$vo.course.name}</td>
                         <td>{$vo.score}</td>
-						<td>{$vo.comment}</td>
-						<td>{$vo.student_feedback}</td>
-						<!-- href = "{:url('edit', ['id' => $vo.id])}" -->
-                        
+                        <td>{$vo.comment}</td>
+                        <td>{$vo.student_feedback}</td>
                     </tr>
                 {/volist}
 				</tbody>
@@ -51,6 +39,4 @@
 		</div>
 	</div>
 </div>
-
-
 {/block}
