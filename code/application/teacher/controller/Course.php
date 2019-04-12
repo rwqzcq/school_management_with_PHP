@@ -34,9 +34,13 @@ class Course extends Base
         // 成绩列表 站在课程的角度找成绩 姓名 分数 评价 反馈 action 
         $grades = $course->grades;
         $has_socred = [];
+        $total = 0;
+
         foreach ($grades as $grade) {
             $has_socred[] = $grade->sid;
+            $total = $total + $grade->score;
         }
+        $average = $total / count($grades);
         // 学生列表
         $students = Student::where('id', 'not in', $has_socred)->select();        
         $assign = [];
@@ -44,6 +48,7 @@ class Course extends Base
         $assign['classes'] = $class;
         $assign['grades'] = $grades;
         $assign['students'] = $students;
+        $assign['average'] = $average;
         return $this->fetch('', $assign);
     }
     /**
