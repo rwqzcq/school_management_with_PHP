@@ -12,6 +12,6 @@ class Award extends Model
 
     public function students()
     {
-        return $this->belongsToMany('app\common\model\student', 'app\common\model\AwardStudent', 'sid', 'aid');
+        return $this->belongsToMany('app\common\model\Student', 'app\common\model\AwardStudent', 'sid', 'aid');
     }
 }
