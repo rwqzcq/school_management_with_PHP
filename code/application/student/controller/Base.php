@@ -15,8 +15,12 @@ class Base extends Controller
     }
     public function __init()
     {
+        
         // session读取
-        $student_id = 1;
+        $student_id = session('user_id');
+        if(!$student_id) {
+            return $this->error('Please Login Firstly!', 'user/index/login');
+        }
         $this->currentStudent = Model::get($student_id);
-    }    
+    }
 }

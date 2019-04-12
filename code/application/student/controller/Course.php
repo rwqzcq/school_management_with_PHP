@@ -16,6 +16,7 @@ class Course extends Base
      */
     public function index()
     {
+       // echo session('role');die;
         if(request()->has('name') && trim(request()->param('name')) != '') {
             $name = request()->param('name');
             $courses = Model::where('name', 'like', '%'.$name.'%')->select(); // 所有课程

@@ -50,3 +50,5 @@
 ```
 {eq name="vo:name" value="$a"}{$vo.name}{/eq}
 ```
+## 2. switch
+- 字符串直接写 不用加单引号
