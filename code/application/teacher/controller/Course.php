@@ -20,7 +20,15 @@ class Course extends Base
     public function index()
     {
         // 自己的课程
-        $course = $this->currentTeacher->courses[0];
+        $course = $this->currentTeacher->courses;
+        if(count($course) == 0) {
+            die('You do not have course! Please concact the manager to assign a course to you!');
+        } else {
+            $course = $course[0];
+        }
+        // $course = $this->currentTeacher->courses[0];
+        // dump($this->currentTeacher->courses);
+        // die;
         // 自己所在的班级
         $class = $this->currentTeacher->classes->name;
         // 成绩列表 站在课程的角度找成绩 姓名 分数 评价 反馈 action 

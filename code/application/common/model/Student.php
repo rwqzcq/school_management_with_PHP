@@ -20,7 +20,8 @@ class Student extends Model
     }
     public function awards()
     {
-        return $this->hasMany('app\common\model\Award', 'sid');
+        return $this->belongsToMany('app\common\model\Award', 'app\common\model\AwardStudent', 'aid', 'sid');
+        // return $this->hasMany('app\common\model\Award', 'sid');
     }
     /**
      * 查询某一个学生某个课程的成绩

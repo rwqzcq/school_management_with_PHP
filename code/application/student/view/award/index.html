@@ -1,0 +1,44 @@
+{extend name="common@Public/base" /}
+{block name="main"}
+
+<div class="container">
+	<div class="row">
+		<div class="span12">
+            <h3 class="text-center">
+				Your Awards
+			</h3> 
+            <hr>
+			<table class="table table-bordered text-center">
+				<thead>
+					<tr class = "text-center">
+						<td>
+							name
+						</td>
+                        <td>
+                            introduction
+                        </td>
+					</tr>
+				</thead>
+				<tbody>
+                {volist name="awards" id="vo"}
+                    <tr>
+                        <td>{$vo.name}</td>
+                        <td>{$vo.introduction}</td>
+                    </tr>
+                {/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script>
+    $(function(){
+
+
+    });
+</script>
+{/block}
