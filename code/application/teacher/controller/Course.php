@@ -9,6 +9,7 @@ use app\common\model\CourseTeacher as CT;
 use app\common\model\Teacher;
 use app\common\model\Student;
 use app\common\model\Grade;
+use think\Db;
 
 class Course extends Base
 {
@@ -42,13 +43,37 @@ class Course extends Base
         }
         $average = $total / count($grades);
         // 学生列表
-        $students = Student::where('id', 'not in', $has_socred)->select();        
+        $students = Student::where('id', 'not in', $has_socred)->select();    
+        // 查看分数段图表
+        $dir_sql = 'select count(case `score` when 100 then 1 end) as `full`,
+        count(case when `score` between 90 and 99 then 1 end) as `90-99`,
+        count(case when `score` between 80 and 89 then 1 end) as `80-89`,
+        count(case when `score` between 70 and 79 then 1 end) as `70-79`,
+        count(case when `score` between 60 and 69 then 1 end) as `70-79`,
+        count(case when `score`< 60 then 1 end) as `fail`
+        from `grade` where cid = ' . $course->id; 
+        $r = Db::query($dir_sql);
+        $score_pie_data = $r[0];
+        // dump($score_pie_data);
+        // die;
+        $json_score_pie_data = [];
+        foreach ($score_pie_data as $key => $value) {
+            $temp = [];
+            $temp['value'] = $value;
+            $temp['name'] = $key;
+            $json_score_pie_data[] = $temp;
+
+        }
+        $json_score_pie_data = json_encode($json_score_pie_data); // 不编码中文
+        // echo $json_score_pie_data;
+        // die;
         $assign = [];
         $assign['course'] = $course;
         $assign['classes'] = $class;
         $assign['grades'] = $grades;
         $assign['students'] = $students;
         $assign['average'] = $average;
+        $assign['json_score_pie_data'] = $json_score_pie_data;
         return $this->fetch('', $assign);
     }
     /**

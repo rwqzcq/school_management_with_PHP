@@ -49,6 +49,44 @@
 			<h3 class="text-center">
 				the average score is {$average}
 			</h3> 
+			<hr>
+			<h3 class="text-center">
+				The Score Distribution Diagram
+			</h3> 		
+			<hr>
+			<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.common.js"></script>
+			<div id="pieArea" style = "width:800px; height:800px;">
+				
+			</div>	
+			<script type="text/javascript">
+				var chart = echarts.init(document.getElementById('pieArea'));
+				var option = {
+					title : {
+						text: 'The Score Distribution Diagram'
+					},
+					tooltip : {
+             			trigger: 'item',
+             			formatter: "{a} <br/>{b} : {d}%"         
+             		},
+					series : [
+				        {
+				            name: 'score',
+				            type: 'pie',
+				            radius : '55%',
+				            //center: ['80%', '20%'],
+				            data: {$json_score_pie_data|raw}
+				            // itemStyle: {
+				            //     emphasis: {
+				            //         shadowBlur: 10,
+				            //         shadowOffsetX: 0,
+				            //         shadowColor: 'rgba(0, 0, 0, 0.5)'
+				            //     }
+				            // }
+				        }
+					]
+				};
+				chart.setOption(option);
+			</script>
 		</div>
 	</div>
 </div>
