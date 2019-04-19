@@ -34,46 +34,61 @@ class Course extends Base
         $class = $this->currentTeacher->classes->name;
         // 成绩列表 站在课程的角度找成绩 姓名 分数 评价 反馈 action 
         $grades = $course->grades;
-        $has_socred = [];
-        $total = 0;
+        $if_has_score = false;
+        //if(count($grades) > 0) {
+            $if_has_score = true;
+            $has_socred = [];
+            $total = 0;
+    
+            foreach ($grades as $grade) {
+                $has_socred[] = $grade->sid;
+                $total = $total + $grade->score;
+            }
+            if(count($grades) > 0) {
+                $average = $total / count($grades);
+            } else {
+                $average = 0;
+            }
+            
+            // 学生列表
+            $students = Student::where('id', 'not in', $has_socred)->select();    
+            // 查看分数段图表
+            $dir_sql = 'select count(case `score` when 100 then 1 end) as `full`,
+            count(case when `score` between 90 and 99 then 1 end) as `90-99`,
+            count(case when `score` between 80 and 89 then 1 end) as `80-89`,
+            count(case when `score` between 70 and 79 then 1 end) as `70-79`,
+            count(case when `score` between 60 and 69 then 1 end) as `70-79`,
+            count(case when `score`< 60 then 1 end) as `fail`
+            from `grade` where cid = ' . $course->id; 
+            $r = Db::query($dir_sql);
+            $score_pie_data = $r[0];
+            // dump($score_pie_data);
+            // die;
+            $json_score_pie_data = [];
+            foreach ($score_pie_data as $key => $value) {
+                $temp = [];
+                $temp['value'] = $value;
+                $temp['name'] = $key;
+                $json_score_pie_data[] = $temp;
+    
+            }
+            $json_score_pie_data = json_encode($json_score_pie_data); // 不编码中文            
+        // } else {
+        //     $if_has_score = false;
+        // }
 
-        foreach ($grades as $grade) {
-            $has_socred[] = $grade->sid;
-            $total = $total + $grade->score;
-        }
-        $average = $total / count($grades);
-        // 学生列表
-        $students = Student::where('id', 'not in', $has_socred)->select();    
-        // 查看分数段图表
-        $dir_sql = 'select count(case `score` when 100 then 1 end) as `full`,
-        count(case when `score` between 90 and 99 then 1 end) as `90-99`,
-        count(case when `score` between 80 and 89 then 1 end) as `80-89`,
-        count(case when `score` between 70 and 79 then 1 end) as `70-79`,
-        count(case when `score` between 60 and 69 then 1 end) as `70-79`,
-        count(case when `score`< 60 then 1 end) as `fail`
-        from `grade` where cid = ' . $course->id; 
-        $r = Db::query($dir_sql);
-        $score_pie_data = $r[0];
-        // dump($score_pie_data);
-        // die;
-        $json_score_pie_data = [];
-        foreach ($score_pie_data as $key => $value) {
-            $temp = [];
-            $temp['value'] = $value;
-            $temp['name'] = $key;
-            $json_score_pie_data[] = $temp;
-
-        }
-        $json_score_pie_data = json_encode($json_score_pie_data); // 不编码中文
         // echo $json_score_pie_data;
         // die;
         $assign = [];
         $assign['course'] = $course;
         $assign['classes'] = $class;
-        $assign['grades'] = $grades;
-        $assign['students'] = $students;
-        $assign['average'] = $average;
-        $assign['json_score_pie_data'] = $json_score_pie_data;
+        if($if_has_score) {
+            $assign['grades'] = $grades;
+            $assign['students'] = $students;
+            $assign['average'] = $average;
+            $assign['json_score_pie_data'] = $json_score_pie_data;
+        }
+        $assign['if_has_score'] = $if_has_score;
         return $this->fetch('', $assign);
     }
     /**

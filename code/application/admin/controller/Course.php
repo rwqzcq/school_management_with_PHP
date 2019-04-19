@@ -32,7 +32,7 @@ class Course extends Controller
         $assign['teachers'] = $all;
         // 教师分配
         $assigned_teachers = CT::all()->toArray();
-        if(!$assigned_teachers) {
+        if(!$assigned_teachers) { // 没有老师
             $assign['choices'] = Teacher::all();
         } else {
             // 排除已经分配的
@@ -40,6 +40,9 @@ class Course extends Controller
             $assign['choices'] = Teacher::where('id', 'not in', $assigned_tids)->select();
         }
         return $this->fetch('', $assign);
+        /**
+         * 因为一个老师只能教1门课程 
+         */
     }
 
     /**

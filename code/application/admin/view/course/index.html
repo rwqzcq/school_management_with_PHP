@@ -52,9 +52,9 @@
                         <td>
 							<a href = "{:url('edit', ['id' => $vo.id])}">update</a> | 
 							<a href = "{:url('delete', ['id' => $vo.id])}" class = "delete" data-id = {$vo.id}>delete</a> | 
-							<a data-name = "{$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >assign teachers | </a>
+							<a data-title = "Assign Teachers For " data-name = "Assign Teachers For {$vo.name}" data-id = "{$vo.id}" class = "a_update" href="#modal-container-769144" role="button"  data-toggle="modal" >assign teachers | </a>
 							<!-- check assigned teachers -->
-							<a class = "a_view_teachers" data-toggle="modal" data-id = "{$vo.id}" href="#modal-container-769144" href = "{:url('edit', ['id' => $vo.id])}">view teachers | </a>
+							<a data-title = "View Teachers Of " data-name = "View Teachers Of {$vo.name}" class = "a_view_teachers" data-toggle="modal" data-id = "{$vo.id}" href="#modal-container-769144" href = "{:url('edit', ['id' => $vo.id])}">view teachers | </a>
 							<a href = "{:url('Grade/index', ['course_id' => $vo.id])}">view grades</a>
 						</td>
                     </tr>
@@ -83,7 +83,9 @@
 					<div class="update-area">
 
 					</div>
-					<div class="form-group">
+					<hr>
+					<h5>Teachers You Can Assign</h5>
+					<div class="form-group" style = "">
 						{volist name = "choices" id = "vo"}
 							<label class="checkbox-inline">
 								<input class= "teacher-ids" type="checkbox" name = "teacher_ids[]" value = "{$vo.id}">{$vo.username}  &nbsp;
@@ -109,22 +111,20 @@
             $.getJSON();
         });*/
 		$('.a_update').bind('click', function(){
-			/*$.getJSON('', {}. function(data){
-				
-			});*/
+			$('#myModalLabel').html($(this).data('name'));
 			console.log($('.teacher-ids').length);
 			if($('.teacher-ids').length == 0) {
 				alert('there is no alternative teachers you can assign! Please add teachers!');
 				return false;
 			}
-			$('#myModalLabel span').html($(this).data('name'));
+			$('.update-area').html('');
 			$('#exampleInputEmail1').val($(this).data('name'));
 			var url = '{:url('assignTeacher')}' + '?course_id='  + $(this).data('id');
 			$('#m_form').attr('action', url);
 		});     
 
 		$('.a_view_teachers').bind('click', function(){
-			$('#myModalLabel').html('view Teachers');
+			$('#myModalLabel').html($(this).data('name'));
 			var url = '{:url('getAssignedTeachers')}';
 			$('.update-area').html('');
 			$.ajax({
@@ -136,7 +136,7 @@
 					console.log(data);
 					dom = '';
 					if(data.length == 0) { // data == '[]' || data == []
-						dom = 'no teacher!';
+						dom = 'this course has not been assigned teachers!';
 					} else {
 						for(item in data) {					
 							temp = data[item];
